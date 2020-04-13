@@ -1,0 +1,22 @@
+#
+# Bareos WebUI Apache configuration file
+#
+
+Alias /dolibarr  /usr/share/dolibarr/htdocs
+
+<Directory /usr/share/dolibarr/>
+        <FilesMatch .php$>
+              SetHandler "proxy:unix:/var/run/rh-php73-php-fpm/dolibarr.sock|fcgi://localhost/"
+        </FilesMatch>
+        Options FollowSymLinks
+        AllowOverride None
+
+        # Apache 2.4
+        <IfModule mod_authz_core.c>
+                <IfModule mod_access_compat.c>
+                    Order deny,allow
+                </IfModule>
+                {$dolibarr{access} eq 'private' ? "Require ip $localAccess" : "Require all granted"}
+        </IfModule>
+
+</Directory>

@@ -1,0 +1,30 @@
+#!/usr/bin/perl -w
+
+package esmith;
+
+use strict;
+use Errno;
+use esmith::util;
+use NethServer::Password;
+
+
+##test if the mysql db is created, if not then the user and the mysql db are created
+     if ( ! -d '/var/lib/mysql/dolibarr') {
+my $password = NethServer::Password::store('dolibarr') || die('Could not generate dolibarr password!');
+
+my $commands = join("\n", 
+	      "GRANT ALL PRIVILEGES ON `dolibarr`.* TO 'dolibarr'\@'localhost' IDENTIFIED BY '$password';",
+	      "FLUSH PRIVILEGES;",
+	      "CREATE DATABASE IF NOT EXISTS dolibarr DEFAULT CHARACTER SET = 'utf8';"
+     ) . "\n";
+
+print $commands;
+
+open(FH, '|-', '/usr/bin/mysql -B -f') || die("[ERROR] Could not connect to mysql");
+print FH $commands;     
+close(FH);
+
+
+exit (0);
+
+}

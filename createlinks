@@ -1,0 +1,30 @@
+#!/usr/bin/perl -w
+
+use esmith::Build::CreateLinks qw(:all);
+
+my $event = 'nethserver-dolibarr-update';
+
+event_actions($event, qw(
+             initialize-default-databases 00
+             nethserver-dolibarr-create-database 10
+));
+
+event_templates($event, qw(
+                /etc/httpd/conf.d/default-virtualhost.inc
+                /etc/httpd/conf.d/zzz_dolibarr.conf
+                /etc/opt/rh/rh-php73/php-fpm.d/dolibarr.conf
+));
+
+event_services($event, qw(
+               httpd      reload
+               rh-php73-php-fpm restart 
+));
+
+
+#
+# trusted-networks-modify
+#
+
+my $event = 'trusted-networks-modify';
+templates2events("/etc/httpd/conf.d/zzz_dolibarr.conf", $event);
+event_services($event, 'httpd' => 'reload');
