@@ -6,7 +6,7 @@ my $event = 'nethserver-dolibarr-update';
 
 event_actions($event, qw(
              initialize-default-databases 00
-             nethserver-dolibarr-create-database 10
+             nethserver-dolibarr-create-database 95
 ));
 
 event_templates($event, qw(
