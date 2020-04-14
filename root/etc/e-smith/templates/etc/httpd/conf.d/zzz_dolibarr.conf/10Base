@@ -1,8 +1,8 @@
 #
-# Bareos WebUI Apache configuration file
+# dolibarr WebUI Apache configuration file
 #
 
-Alias /dolibarr  /usr/share/dolibarr/htdocs
+{$dolibarr{'status'} eq 'enabled' ? 'Alias /dolibarr  /usr/share/dolibarr/htdocs':'#Disabled by the status prop'}
 
 <Directory /usr/share/dolibarr/>
         <FilesMatch .php$>
