@@ -21,9 +21,15 @@ my $commands = join("\n",
 print $commands;
 
 open(FH, '|-', '/usr/bin/mysql -B -f') || die("[ERROR] Could not connect to mysql");
-print FH $commands;     
+print FH $commands;
 close(FH);
 
+# Install with CURL
+system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /dev/null 2>&1'); 
+system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step1.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
+system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step2.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
+system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step4.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
+system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step5.php --data "testpost=ok&action=set&selectlang=en_US&pass=admin&pass_verif=admin" > /dev/null 2>&1');
 
 exit (0);
 

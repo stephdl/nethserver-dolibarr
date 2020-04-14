@@ -46,7 +46,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %dir %{_nseventsdir}/%{name}-update
 %doc COPYING
-%config(noreplace) %attr(0750,apache,apache) /usr/share/dolibarr/htdocs/conf/conf.php
+%config(noreplace) %attr(0600,apache,apache) /usr/share/dolibarr/htdocs/conf/conf.php
 
 
 %changelog

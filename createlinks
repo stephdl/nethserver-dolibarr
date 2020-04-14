@@ -13,6 +13,7 @@ event_templates($event, qw(
                 /etc/httpd/conf.d/default-virtualhost.inc
                 /etc/httpd/conf.d/zzz_dolibarr.conf
                 /etc/opt/rh/rh-php73/php-fpm.d/dolibarr.conf
+                /usr/share/dolibarr/htdocs/install/install.forced.php
 ));
 
 event_services($event, qw(
