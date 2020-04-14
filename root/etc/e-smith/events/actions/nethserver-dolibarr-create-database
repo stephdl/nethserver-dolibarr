@@ -1,39 +1,79 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
-package esmith;
 
 use strict;
-use Errno;
-use esmith::util;
+use warnings;
 use NethServer::Password;
+use esmith::ConfigDB;
 
+my $db = esmith::ConfigDB->open() || die("Can't open db");
+
+
+my $old_version = $db->get_prop('dolibarr','rpmVersion') || '11.0.3';
+$old_version =~ s/\.//g;
+
+my $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+$version =~ s/\.//g;
+chomp $version;
 
 ##test if the mysql db is created, if not then the user and the mysql db are created
-     if ( ! -d '/var/lib/mysql/dolibarr') {
-my $password = NethServer::Password::store('dolibarr') || die('Could not generate dolibarr password!');
+if ( ! -d '/var/lib/mysql/dolibarr') {
+    my $password = NethServer::Password::store('dolibarr') || die('Could not generate dolibarr password!');
 
-my $commands = join("\n", 
-	      "GRANT ALL PRIVILEGES ON `dolibarr`.* TO 'dolibarr'\@'localhost' IDENTIFIED BY '$password';",
-	      "FLUSH PRIVILEGES;",
-	      "CREATE DATABASE IF NOT EXISTS dolibarr DEFAULT CHARACTER SET = 'utf8';"
-     ) . "\n";
+    my $commands = join("\n", 
+    	      "GRANT ALL PRIVILEGES ON `dolibarr`.* TO 'dolibarr'\@'localhost' IDENTIFIED BY '$password';",
+    	      "FLUSH PRIVILEGES;",
+    	      "CREATE DATABASE IF NOT EXISTS dolibarr DEFAULT CHARACTER SET = 'utf8';"
+         ) . "\n";
 
-print $commands;
+    print $commands;
 
-open(FH, '|-', '/usr/bin/mysql -B -f') || die("[ERROR] Could not connect to mysql");
-print FH $commands;
-close(FH);
+    open(FH, '|-', '/usr/bin/mysql -B -f') || die("[ERROR] Could not connect to mysql");
+    print FH $commands;
+    close(FH);
 
-unlink ('/usr/share/dolibarr/documents/install.lock');
+    unlink ('/usr/share/dolibarr/documents/install.lock');
 
-# Install with CURL
-system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /dev/null 2>&1'); 
-system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step1.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
-system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step2.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
-system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step4.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
-system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step5.php --data "testpost=ok&action=set&selectlang=en_US&pass=admin&pass_verif=admin" > /dev/null 2>&1');
+    # Install with CURL
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /dev/null 2>&1'); 
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step1.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step2.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step4.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step5.php --data "testpost=ok&action=set&selectlang=en_US&pass=admin&pass_verif=admin" > /dev/null 2>&1');
 
-system('touch /usr/share/dolibarr/documents/install.lock');
-exit (0);
+    system('touch /usr/share/dolibarr/documents/install.lock');
 
+    $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+    chomp $version;
+
+    $db->set_prop('dolibarr','rpmVersion',$version);
+    exit (0);
+
+} elsif ($old_version < $version) {
+
+    # backup , it is a spare wheel 
+    mkdir '/root/backup_db_dolibarr';
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+    $year = 1900 + $year;
+    system("/usr/bin/mysqldump dolibarr > /root/backup_db_dolibarr/dolibar-$year-$mon-$mday-$hour-$min");
+
+    $old_version = $db->get_prop('dolibarr','rpmVersion');
+    $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+    chomp $version;
+
+    unlink ('/usr/share/dolibarr/documents/install.lock');
+
+    # Upgrade with CURL
+    system('curl -kL -H "Host: 127.0.0.1" "https://127.0.0.1/dolibarr/install/upgrade.php?action=upgrade&versionfrom=$old_version&versionto=$version" > /dev/null 2>&1');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST "https://127.0.0.1/dolibarr/install/upgrade2.php?versionfrom=$old_version&versionto=$version" --data "testpost=ok&action=upgrade" > /dev/null 2>&1');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST "https://127.0.0.1/dolibarr/install/step5.php?versionfrom=$old_version&versionto=$version" --data "testpost=ok&action=upgrade" > /dev/null 2>&1');
+
+    system('touch /usr/share/dolibarr/documents/install.lock');
+
+    $db->set_prop('dolibarr','rpmVersion',$version);
+
+} else {
+    $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+    chomp $version;
+    $db->set_prop('dolibarr','rpmVersion',$version);
 }
