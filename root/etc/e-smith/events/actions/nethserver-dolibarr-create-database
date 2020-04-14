@@ -35,6 +35,7 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     unlink ('/usr/share/dolibarr/documents/install.lock');
 
     # Install with CURL
+    print "#\n# Initial importation of the dolibarr mysql database\n#";
     system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /dev/null 2>&1'); 
     system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step1.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
     system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step2.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
@@ -64,6 +65,7 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     unlink ('/usr/share/dolibarr/documents/install.lock');
 
     # Upgrade with CURL
+    print "#\n# SQL update of the dolibarr mysql database\n#";
     system('curl -kL -H "Host: 127.0.0.1" "https://127.0.0.1/dolibarr/install/upgrade.php?action=upgrade&versionfrom=$old_version&versionto=$version" > /dev/null 2>&1');
     system('curl -kL -H "Host: 127.0.0.1" -X POST "https://127.0.0.1/dolibarr/install/upgrade2.php?versionfrom=$old_version&versionto=$version" --data "testpost=ok&action=upgrade" > /dev/null 2>&1');
     system('curl -kL -H "Host: 127.0.0.1" -X POST "https://127.0.0.1/dolibarr/install/step5.php?versionfrom=$old_version&versionto=$version" --data "testpost=ok&action=upgrade" > /dev/null 2>&1');
