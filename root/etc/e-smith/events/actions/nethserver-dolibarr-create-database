@@ -24,6 +24,8 @@ open(FH, '|-', '/usr/bin/mysql -B -f') || die("[ERROR] Could not connect to mysq
 print FH $commands;
 close(FH);
 
+unlink ('/usr/share/dolibarr/documents/install.lock');
+
 # Install with CURL
 system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /dev/null 2>&1'); 
 system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step1.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
@@ -31,6 +33,7 @@ system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install
 system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step4.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
 system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step5.php --data "testpost=ok&action=set&selectlang=en_US&pass=admin&pass_verif=admin" > /dev/null 2>&1');
 
+system('touch /usr/share/dolibarr/documents/install.lock');
 exit (0);
 
 }
