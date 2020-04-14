@@ -11,7 +11,7 @@ Source: %{name}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: nethserver-mysql
 Requires: nethserver-rh-php73-php-fpm
-Requires: dolibarr 
+Requires: dolibarr = 11.0.3
 
 BuildRequires: nethserver-devtools
 BuildArch: noarch
@@ -37,6 +37,7 @@ rm -f %{name}-%{version}-%{release}-filelist
 > %{name}-%{version}-%{release}-filelist
 
 %post
+
 %postun
 
 %clean 
