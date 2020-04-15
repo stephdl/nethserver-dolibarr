@@ -53,11 +53,11 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
 } elsif ($old_version < $version) {
 
     # backup , it is a spare wheel 
-    mkdir '/root/backup_db_dolibarr';
+    mkdir '/var/lib/nethserver/backup_db_dolibarr';
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
     $year = 1900 + $year;
-    system("/usr/bin/mysqldump dolibarr > /root/backup_db_dolibarr/dolibar-$year-$mon-$mday-$hour-$min");
-
+    system("/usr/bin/mysqldump dolibarr > /var/lib/nethserver/backup_db_dolibarr/dolibar-$year-$mon-$mday-$hour-$min");
+    system('/usr/bin/chmod -R 400 /var/lib/nethserver/backup_db_dolibarr/');
     $old_version = $db->get_prop('dolibarr','rpmVersion');
     $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
     chomp $version;
