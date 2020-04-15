@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 0.0.2
+%define version 0.0.3
 %define release 1
 Version: %{version}
 Release: %{release}%{?dist}
@@ -60,5 +60,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon May 13 2020 stephane de Labrusse <stephdl@de-labrusse.fr>
+* Wed Apr 15 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.3
+- Move backup of DB to /var/lib/nethserver 
+
+* Mon Apr 13 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.1
 - initial
