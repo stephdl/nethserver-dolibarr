@@ -6,7 +6,8 @@ my $event = 'nethserver-dolibarr-update';
 
 event_actions($event, qw(
              initialize-default-databases 00
-             nethserver-dolibarr-create-database 95
+             nethserver-dolibarr-create-ldap-into-mysql 92
+             nethserver-dolibarr-create-database 91
 ));
 
 event_templates($event, qw(
@@ -14,6 +15,7 @@ event_templates($event, qw(
                 /etc/httpd/conf.d/zzz_dolibarr.conf
                 /etc/opt/rh/rh-php73/php-fpm.d/dolibarr.conf
                 /usr/share/dolibarr/htdocs/install/install.forced.php
+                /usr/share/dolibarr/htdocs/install/userLdap.sql
 ));
 
 event_services($event, qw(
@@ -29,3 +31,11 @@ event_services($event, qw(
 my $event = 'trusted-networks-modify';
 templates2events("/etc/httpd/conf.d/zzz_dolibarr.conf", $event);
 event_services($event, 'httpd' => 'reload');
+
+#
+# sync when a user is created
+#
+
+event_actions('user-create', qw(
+    nethserver-dolibarr-sync-ldap2mysql 80
+));
