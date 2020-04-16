@@ -1,0 +1,27 @@
+{
+    use NethServer::SSSD;
+    use esmith::ConfigDB;
+    my $sssd = new NethServer::SSSD();
+    my $bindPassword = $sssd->bindPassword();
+    my $baseDN = $sssd->baseDN();
+    my $bindDN = $sssd->bindDN();
+    my $port = $sssd->port();
+    my $userDN = $sssd->userDN();
+
+    if ($sssd->isLdap()) {
+
+    $OUT .=qq( 
+REPLACE INTO llx_const (`name`, `value`, `type`) VALUES 
+('LDAP_SERVER_TYPE', 'openldap', 'chaine'),
+('LDAP_SERVER_PROTOCOLVERSION', '3', 'chaine'),
+('LDAP_SERVER_HOST', 'localhost', 'chaine'),
+('LDAP_SERVER_PORT', '$port', 'chaine'),
+('LDAP_SERVER_DN', '$baseDN', 'chaine'),
+('LDAP_USER_DN', '$userDN', 'chaine'),
+('LDAP_USER_OBJECT_CLASS', 'inetOrgPerson', 'chaine'),
+('LDAP_FILTER_CONNECTION', '&(objectClass=inetOrgPerson)', 'chaine'),
+('LDAP_SYNCHRO_ACTIVE', 'ldap2dolibarr', 'chaine'),
+('LDAP_KEY_USERS', 'uid', 'chaine');
+    );
+    }
+}
