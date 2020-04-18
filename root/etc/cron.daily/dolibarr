@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+
+# backup , it is a spare wheel however you are responsible for your backup...it is up to you. 
+mkdir '/var/lib/nethserver/backup_db_dolibarr';
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+$year = 1900 + $year;
+$mon = 1 + $mon;
+system("/usr/bin/mysqldump dolibarr > /var/lib/nethserver/backup_db_dolibarr/dolibar-$year-$mon-$mday-$hour-$min");
+system('/usr/bin/chmod -R 400 /var/lib/nethserver/backup_db_dolibarr/');

@@ -58,7 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_nseventsdir}/%{name}-update
 %doc COPYING
 %config(noreplace) %attr(0600,apache,apache) /usr/share/dolibarr/htdocs/conf/conf.php
-
+%config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
 * Wed Apr 15 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.3
