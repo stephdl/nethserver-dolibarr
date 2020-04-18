@@ -1,3 +1,3 @@
-PERMS=0600
+PERMS=0400
 UID="apache"
 GID="apache"
