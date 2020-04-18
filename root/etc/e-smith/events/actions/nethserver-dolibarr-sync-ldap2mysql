@@ -7,5 +7,5 @@ my $host = $sssd->host();
 if ($sssd->isLdap()) {
     system('/usr/bin/scl enable rh-php73 -- /usr/share/dolibarr//scripts/user/sync_users_ldap2dolibarr.php commitiferror --server=localhost -y > /dev/null');
 } elsif ($sssd->isAD()) {
-    system("/usr/bin/scl enable rh-php73 -- /usr/share/dolibarr//scripts/user/sync_users_ldap2dolibarr.php commitiferror --server=$host -y");
+    system("/usr/bin/scl enable rh-php73 -- /usr/share/dolibarr//scripts/user/sync_users_ldap2dolibarr.php commitiferror --server=$host -y > /dev/null");
 }
