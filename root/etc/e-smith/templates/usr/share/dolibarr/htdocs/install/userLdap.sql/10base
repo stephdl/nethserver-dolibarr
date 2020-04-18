@@ -7,6 +7,7 @@
     my $bindDN = $sssd->bindDN();
     my $port = $sssd->port();
     my $userDN = $sssd->userDN();
+    my $host = $sssd->host();
 
     if ($sssd->isLdap()) {
 
@@ -22,6 +23,27 @@ REPLACE INTO llx_const (`name`, `value`, `type`) VALUES
 ('LDAP_FILTER_CONNECTION', '&(objectClass=inetOrgPerson)', 'chaine'),
 ('LDAP_SYNCHRO_ACTIVE', 'ldap2dolibarr', 'chaine'),
 ('LDAP_KEY_USERS', 'uid', 'chaine');
+    );
+  } elsif ($sssd->isAD()) {
+
+    $OUT .=qq( 
+REPLACE INTO llx_const (`name`, `value`, `type`) VALUES 
+('LDAP_SERVER_TYPE', 'activedirectory', 'chaine'),
+('LDAP_SERVER_PROTOCOLVERSION', '3', 'chaine'),
+('LDAP_SERVER_HOST', '$host', 'chaine'),
+('LDAP_SERVER_PORT', '389', 'chaine'),
+('LDAP_SERVER_DN', '$baseDN', 'chaine'),
+('LDAP_ADMIN_DN', '$bindDN', 'chaine'),
+('LDAP_ADMIN_PASS', '$bindPassword', 'chaine'),
+('LDAP_SERVER_USE_TLS', '1', 'chaine'),
+('LDAP_USER_DN', 'CN=Users,$baseDN', 'chaine'),
+('LDAP_USER_OBJECT_CLASS', 'person', 'chaine'),
+('LDAP_FILTER_CONNECTION', '&(objectClass=person)', 'chaine'),
+('LDAP_FIELD_MAIL', 'userPrincipalName', 'chaine'),
+('LDAP_FIELD_LOGIN', 'cn', 'chaine'),
+('LDAP_FIELD_LOGIN_SAMBA', 'samaccountname', 'chaine'),
+('LDAP_SYNCHRO_ACTIVE', 'ldap2dolibarr', 'chaine'),
+('LDAP_KEY_USERS', 'cn', 'chaine');
     );
     }
 }
