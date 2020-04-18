@@ -7,6 +7,7 @@
     my $bindDN = $sssd->bindDN();
     my $port = $sssd->port();
     my $userDN = $sssd->userDN();
+    my $host = $sssd->host();
     my $password = NethServer::Password::store('dolibarr') || die('Could not generate dolibarr password!');
     my $MysqlAuth = $dolibarr{'MysqlAuth'} || 'disabled';
 
@@ -59,6 +60,36 @@
 //\$dolibarr_main_auth_ldap_debug='true';
 
 );
+
+    }  elsif ($sssd->isAD()){
+      if ($MysqlAuth eq 'disabled') {
+      $OUT.= "
+// Authentication settings
+\$dolibarr_main_authentication='ldap';
+";
+  } else {
+      $OUT.= "
+// Authentication settings
+\$dolibarr_main_authentication='ldap,dolibarr';
+";
+      }
+      $OUT .= qq (
+
+// Parameters used to setup LDAP authentication.
+//
+\$dolibarr_main_auth_ldap_host='$host';           // You can define several servers here separated with a comma.
+\$dolibarr_main_auth_ldap_port='389';                        // Port
+\$dolibarr_main_auth_ldap_version='3';
+\$dolibarr_main_auth_ldap_servertype='activedirectory';             // openldap, activedirectory or egroupware
+\$dolibarr_main_auth_ldap_login_attribute='cn';             // Ex: uid or samaccountname for active directory
+\$dolibarr_main_auth_ldap_dn='CN=Users,$baseDN'; // Ex: ou=users,dc=my-domain,dc=com
+//\$dolibarr_main_auth_ldap_filter = '';                     // If defined, two previous parameters are not used to find a user into LDAP. Ex: (uid=%1%) or &(uid=%1%)(isMemberOf=cn=Sales,ou=Groups,dc=opencsi,dc=com).
+\$dolibarr_main_auth_ldap_admin_login='$bindDN';     // Required only if anonymous bind disabled. Ex: cn=admin,dc=example,dc=com
+\$dolibarr_main_auth_ldap_admin_pass='$bindPassword';                       // Required only if anonymous bind disabled. Ex: secret
+//\$dolibarr_main_auth_ldap_debug='true';
+
+);
+
     } else {
         $OUT .= "\n\$dolibarr_main_authentication='dolibarr';\n";
     }

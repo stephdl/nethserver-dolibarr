@@ -2,10 +2,14 @@
 
 use NethServer::SSSD;
 my $sssd = new NethServer::SSSD();
+my $host = $sssd->host();
 
 if ($sssd->isLdap()) {
     system('/usr/bin/mysql dolibarr < /usr/share/dolibarr/htdocs/install/userLdap.sql');
     system('/usr/bin/scl enable rh-php73 -- /usr/share/dolibarr//scripts/user/sync_users_ldap2dolibarr.php commitiferror --server=localhost -y > /dev/null');
+} elsif ($sssd->isAD()) {
+    system('/usr/bin/mysql dolibarr < /usr/share/dolibarr/htdocs/install/userLdap.sql');
+    system("/usr/bin/scl enable rh-php73 -- /usr/share/dolibarr//scripts/user/sync_users_ldap2dolibarr.php commitiferror --server=$host -y > /dev/null");
 }
 
 # overwrite dolibarr configuration 

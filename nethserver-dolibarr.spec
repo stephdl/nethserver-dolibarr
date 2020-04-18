@@ -28,6 +28,7 @@ foundations or freelancers. It includes different features for enterprise resour
 %build
 %{makedocs}
 perl createlinks
+sed -i 's/_RELEASE_/%{version}/' %{name}.json
 
 %install
 rm -rf $RPM_BUILD_ROOT
