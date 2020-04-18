@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 0.0.4
+%define version 0.0.5
 %define release 1
 Version: %{version}
 Release: %{release}%{?dist}
@@ -61,10 +61,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
-* Sat Apr 18 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.4
+* Sat Apr 18 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.5
 - Ldap integration (openldap & samba AD)
 - Backup of mysql DB  by cron.daily
 - Version is displayed in cockpit application
+- Backup-data of /usr/share/dolibarr/documents
 
 * Wed Apr 15 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.3
 - Move backup of DB to /var/lib/nethserver 
