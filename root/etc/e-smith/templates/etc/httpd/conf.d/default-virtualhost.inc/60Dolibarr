@@ -1,5 +1,5 @@
 #
-#60Bareos
+#60dolibarr
 #
 {
   $OUT .= " RewriteEngine On\n";

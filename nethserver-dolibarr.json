@@ -2,7 +2,7 @@
   "id": "nethserver-dolibarr",
   "name": "dolibarr",
   "summary": "Provide the ERP/CRM dolibarr",
-  "description": "Provide the backupc system with bareos",
+  "description": "Provide the ERP/CRM dolibarr",
   "url": "",
   "homepage": "https://github.com/stephdl/nethserver-dolibarr",
   "provides": ["nethserver-dolibarr"],
