@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 0.0.8
+%define version 0.0.9
 %define release 1
 Version: %{version}
 Release: %{release}%{?dist}
@@ -61,6 +61,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
+* Fri May 01 2020  stephane de labrusse  <stephdl@de-labrusse.fr> 0.0.9
+- Vhost is possible in cockpit and nethgui applications
+
 * Thu Apr 30 2020 stephane de labrusse  <stephdl@de-labrusse.fr> 0.0.8
 - dolibarr can use a virtualhost
 
