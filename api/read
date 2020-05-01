@@ -22,7 +22,12 @@ input=$(cat)
 action=$(jq -r .action <<<"$input")
 protocol=$(jq -r .location.protocol <<<"$input")
 host=$(jq -r .location.hostname <<<"$input")
+vhost=$(/usr/sbin/e-smith/config getprop dolibarr DomainName)
 
 if [[ $action == "app-info" ]]; then
-    printf '{"url":"%s"}' "${protocol}//${host}/dolibarr/"
+    if [[ $vhost == '' ]];then
+        printf '{"url":"%s"}' "${protocol}//${host}/dolibarr/"
+    else 
+        printf '{"url":"%s"}' "${protocol}//${vhost}/htdocs/"
+    fi
 fi
