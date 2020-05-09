@@ -3,5 +3,5 @@
 #
 {
   $OUT .= " RewriteEngine On\n";
-  $OUT .= " RewriteRule ^/dolibarr/(/.*|\$)    https://%{HTTP_HOST}/dolibarr/\$1 [L,R]\n";
+  $OUT .= " RewriteRule ^/dolibarr(/.*|\$)    https://%{HTTP_HOST}/dolibarr/\$1 [L,R]\n";
 }
