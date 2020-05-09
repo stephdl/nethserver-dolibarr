@@ -35,12 +35,12 @@ class Dolibarr extends \Nethgui\Module\AbstractModule implements \NethServer\Mod
         $vhost = $this->getPlatform()->getDatabase('configuration')->getProp('dolibarr','DomainName');
         if ($vhost) {
              return array(
-             'url' => "https://".$vhost."/htdocs"
+             'url' => "https://".$vhost."/dolibarr/"
              );
         } else {
              $host = explode(':',$_SERVER['HTTP_HOST']);
              return array(
-             'url' => "https://".$host[0]."/dolibarr/htdocs"
+             'url' => "https://".$host[0]."/dolibarr/"
              );
         }
     }
