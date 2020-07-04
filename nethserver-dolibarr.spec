@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 0.0.10
+%define version 0.0.11
 %define release 1
 Version: %{version}
 Release: %{release}%{?dist}
@@ -49,6 +49,8 @@ rm -f %{name}-%{version}-%{release}-filelist
 %post
 
 %postun
+/usr/bin/rm -f /etc/httpd/conf.d/zzz_dolibarr.conf
+/usr/bin/systemctl reload httpd
 
 %clean 
 rm -rf $RPM_BUILD_ROOT
@@ -61,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
+* Sat Jul 04 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.11
+- Remove http templates after rpm removal
+
 * Sat May 09 2020 stephane de labrusse  <stephdl@de-labrusse.fr> 0.0.10
 - Fix SSL redirection
 - Fix Nethgui application link
