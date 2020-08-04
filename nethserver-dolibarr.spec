@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 0.0.11
+%define version 0.0.12
 %define release 1
 Version: %{version}
 Release: %{release}%{?dist}
@@ -11,7 +11,7 @@ Source: %{name}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: nethserver-mysql
 Requires: nethserver-rh-php73-php-fpm
-Requires: dolibarr = 11.0.3
+Requires: dolibarr = 11.0.5
 
 BuildRequires: nethserver-devtools
 BuildArch: noarch
@@ -63,6 +63,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
+* Tue Aug 04 2020 stephane de Labrusse <stephdl@de-labrusse.fr>
+- Upstream upgrade to 11.0.5
+
 * Sat Jul 04 2020 stephane de Labrusse <stephdl@de-labrusse.fr> 0.0.11
 - Remove http templates after rpm removal
 
