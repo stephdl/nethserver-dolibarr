@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 12.0.1
+%define version 12.0.3
 %define release 2
 Version: %{version}
 Release: %{release}%{?dist}
@@ -11,7 +11,7 @@ Source: %{name}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: nethserver-mysql
 Requires: nethserver-rh-php73-php-fpm
-Requires: dolibarr = 12.0.1
+Requires: dolibarr = %{version}
 
 BuildRequires: nethserver-devtools
 BuildArch: noarch
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
+* Thu Nov 05 2020 stephane de Labrusse <stephdl@de-labrusse.fr>
+- Upstream upgrade to 12.0.3
+
 * Tue Aug 04 2020 stephane de Labrusse <stephdl@de-labrusse.fr>
 - Upstream upgrade to 12.0.1
 
