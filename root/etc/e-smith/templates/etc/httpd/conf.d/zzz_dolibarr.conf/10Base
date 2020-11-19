@@ -37,7 +37,7 @@ EOF
 <Directory /usr/share/dolibarr>
     SSLRequireSSL on
     <FilesMatch .php\$>
-        SetHandler "proxy:unix:/var/run/rh-php73-php-fpm/dolibarr.sock|fcgi://localhost/"
+        SetHandler "proxy:unix:/var/run/rh-php73-php-fpm/dolibarr.sock|fcgi://localhost"
     </FilesMatch>
     Options FollowSymLinks
     AllowOverride None
