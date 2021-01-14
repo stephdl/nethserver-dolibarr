@@ -1,8 +1,8 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 12.0.3
-%define release 3
+%define version 12.0.4
+%define release 1
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
+* Thu Jan 14 2021 stephane de Labrusse <stephdl@de-labrusse.fr>
+- Upstream upgrade to 12.0.4
+
 * Thu Nov 19 2020  stephane de Labrusse <stephdl@de-labrusse.fr> 12.0.3-3
 - Remove the trailling / of linux fpm socket
 
