@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 13.0.3
+%define version 13.0.4
 %define release 1
 Version: %{version}
 Release: %{release}%{?dist}
@@ -65,6 +65,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 
 %changelog
+* Tue Aug 10 2021 stephane de Labrusse <stephdl@de-labrusse.fr>
+- Bump to 13.0.4
+
 * Fri Jul 2 2021 stephane de Labrusse <stephdl@de-labrusse.fr>
 - Bump to 13.0.3
 
