@@ -60,37 +60,12 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     system("/usr/bin/mysqldump dolibarr > /var/lib/nethserver/backup_db_dolibarr/dolibar-$year-$mon-$mday-$hour-$min");
     system('/usr/bin/chmod -R 400 /var/lib/nethserver/backup_db_dolibarr/');
 
-    # find version
+    # find version REAL VERSION
     $old_version = $db->get_prop('dolibarr','rpmVersion');
     $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
     chomp $version;
 
-    # now dolibarr seems to make mysql database fixes between major version eg 12->13
-    # think to check https://192.168.12.183/dolibarr/install/index.php
-    my $indexversion = substr($version, 0, 2);
-    my $indexold_version = substr($old_version, 0, 2);
-    chomp $indexversion;
-    chomp $indexold_version;
-
-    # remove the upgrade blocker
-    unlink ('/usr/share/dolibarr/documents/install.lock');
-
-    # Upgrade with CURL, example below
-    # system("curl","-kL","-H",'"Host: 127.0.0.1"',"https://127.0.0.1/dolibarr/install/upgrade.php?action=upgrade&versionfrom=$indexold_version&versionto=$indexversion");
-    # system("curl","-kL","-H","'Host: 127.0.0.1'","-X","POST","https://127.0.0.1/dolibarr/install/upgrade2.php?versionfrom=$indexold_version&versionto=$indexversion","--data","testpost=ok&action=upgrade");
-    # system("curl","-kL","-H","'Host: 127.0.0.1'","-X","POST","https://127.0.0.1/dolibarr/install/step5.php?versionfrom=$indexold_version&versionto=$indexversion","--data","testpost=ok&action=upgrade");
-    # https://ns7dev9/dolibarr/install/upgrade.php?action=upgrade&selectlang=en_US&versionfrom=12.0.0&versionto=13.0.0
-    # https://ns7dev9/dolibarr/install/upgrade2.php?versionfrom=12.0.0&versionto=13.0.0
-    # https://ns7dev9/dolibarr/install/step5.php?versionfrom=12.0.0&versionto=13.0.0
-
-    if (($indexversion eq '13' && $indexold_version eq '12' ) || ($indexversion eq '13' && $indexold_version eq '13')) {
-        print "#\n# SQL update of the dolibarr mysql database\n#";
-        system('curl -kL -H "Host: 127.0.0.1" "https://127.0.0.1/dolibarr/install/upgrade.php?action=upgrade&versionfrom=12.0.0&versionto=13.0.0"');
-        system('curl -kL -H "Host: 127.0.0.1" -X POST "https://127.0.0.1/dolibarr/install/upgrade2.php?versionfrom=12.0.0&versionto=13.0.0" --data "testpost=ok&action=upgrade"');
-        system('curl -kL -H "Host: 127.0.0.1" -X POST "https://127.0.0.1/dolibarr/install/step5.php?versionfrom=12.0.0&versionto=13.0.0" --data "testpost=ok&action=upgrade"');
-    }
-
-    system('touch /usr/share/dolibarr/documents/install.lock');
+    system("/etc/e-smith/events/actions/nethserver-dolibarr-do-database-upgrade $old_version $version");
 
     $db->set_prop('dolibarr','rpmVersion',$version);
 
