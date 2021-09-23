@@ -8,10 +8,12 @@ Release: %{release}%{?dist}
 License: GPL
 Group: Networking/Daemons
 Source: %{name}-%{version}.tar.gz
+Source1: https://github.com/Dolibarr/dolibarr/archive/%{version}.tar.gz
+
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: nethserver-mysql
 Requires: nethserver-rh-php73-php-fpm
-Requires: dolibarr = %{version}
+Obsoletes: dolibarr
 
 BuildRequires: nethserver-devtools
 BuildArch: noarch
@@ -23,6 +25,7 @@ foundations or freelancers. It includes different features for enterprise resour
 
 
 %prep
+
 %setup
 
 %build
@@ -46,6 +49,12 @@ rm -f %{name}-%{version}-%{release}-filelist
 %{genfilelist} $RPM_BUILD_ROOT \
 > %{name}-%{version}-%{release}-filelist
 
+# Temp directory
+mkdir -p %{buildroot}/usr/share/dolibarr/documents
+mkdir -p %{buildroot}/usr/share/dolibarr/htdocs/custom
+tar xzvf %{SOURCE1}
+cp -r dolibarr-%{version}/* %{buildroot}%{_datadir}/dolibarr
+
 %post
 
 %postun
@@ -63,6 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING
 %config(noreplace) %attr(0600,apache,apache) /usr/share/dolibarr/htdocs/conf/conf.php
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
+%{_datadir}/dolibarr
+%dir %attr(0750,apache,apache) %{_datadir}/dolibarr/documents
+%dir %attr(0750,apache,apache) %{_datadir}/dolibarr/htdocs/custom
 
 %changelog
 * Wed Sep 22 2021  stephane de Labrusse <stephdl@de-labrusse.fr>
