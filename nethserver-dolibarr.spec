@@ -51,6 +51,7 @@ rm -f %{name}-%{version}-%{release}-filelist
 
 # Temp directory
 mkdir -p %{buildroot}/usr/share/dolibarr/documents
+mkdir -p %{buildroot}/usr/share/dolibarr/documents/bank
 mkdir -p %{buildroot}/usr/share/dolibarr/htdocs/custom
 tar xzvf %{SOURCE1}
 cp -r dolibarr-%{version}/* %{buildroot}%{_datadir}/dolibarr
@@ -74,6 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0700,root,root) /etc/cron.daily/dolibarr
 %{_datadir}/dolibarr
 %dir %attr(0750,apache,apache) %{_datadir}/dolibarr/documents
+%dir %attr(0750,apache,apache) %{_datadir}/dolibarr/documents/bank
 %dir %attr(0750,apache,apache) %{_datadir}/dolibarr/htdocs/custom
 
 %changelog
