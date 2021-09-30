@@ -64,8 +64,15 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     $old_version = $db->get_prop('dolibarr','rpmVersion');
     $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
     chomp $version;
+    # now dolibarr seems to make mysql database fixes between major version eg 12->13
+    # think to check https://192.168.12.183/dolibarr/install/index.php
+    $version =~ /(\d+)/;
+    my $indexversion = $1;
+    $old_version =~ /(\d+)/;
+    my $indexold_version = $1;
 
-    system("/etc/e-smith/events/actions/nethserver-dolibarr-do-database-upgrade $old_version $version");
+    print "upgrade from $old_version to  $version\n";
+    system("/etc/e-smith/events/actions/nethserver-dolibarr-do-database-upgrade $indexold_version $indexversion");
 
     $db->set_prop('dolibarr','rpmVersion',$version);
 
