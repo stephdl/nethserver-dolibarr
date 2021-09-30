@@ -5,13 +5,31 @@
 #
 old_version=$1
 version=$2
-# allow to unlock 
-/usr/bin/rm -f /usr/share/dolibarr/documents/install.lock
+
 # we have some paths misconfiguration  (include ../folder)
 cd /usr/share/dolibarr/htdocs/install/
-# do upgrade
-/opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade.php  $old_version $version  > /tmp/dolibarr_upgrade.php
-/opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade2.php $old_version $version  > /tmp/dolibarr_upgrade2.php
-/opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/step5.php    $old_version $version  > /tmp/dolibarr_step5.php
-
+if [[ $version -gt $old_version ]]; then
+    # do upgrade to major version (6.0.0 to 14.0.0)
+    old=$old_version
+    for (( c=$old_version; c<$version; c++))
+    do
+        # allow to unlock 
+        /usr/bin/rm -f /usr/share/dolibarr/documents/install.lock
+        new=$((old + 1))
+        echo "do upgrade $old.0.0 to $new.0.0"
+        old=$((old + 1))
+        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade.php  "$old.0.0" "$new.0.0" > /tmp/dolibarr_upgrade.php
+        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade2.php "$old.0.0" "$new.0.0" > /tmp/dolibarr_upgrade2.php
+        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/step5.php    "$old.0.0" "$new.0.0" > /tmp/dolibarr_step5.php
+    done
+else
+    # we have to upgrade a minor version (14.0.2 to 14.0.3)
+    /usr/bin/rm -f /usr/share/dolibarr/documents/install.lock
+    old_version=$((old_version - 1))
+    echo "do upgrade $old_version.0.0 to $version.0.0"
+    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade.php  "$old_version.0.0" "$version.0.0" > /tmp/dolibarr_upgrade.php
+    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade2.php "$old_version.0.0" "$version.0.0" > /tmp/dolibarr_upgrade2.php
+    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/step5.php    "$old_version.0.0" "$version.0.0" > /tmp/dolibarr_step5.php
+fi
+# ensure install is locked
 /usr/bin/touch /usr/share/dolibarr/documents/install.lock
