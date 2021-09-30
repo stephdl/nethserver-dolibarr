@@ -12,7 +12,7 @@ my $db = esmith::ConfigDB->open() || die("Can't open db");
 my $old_version = $db->get_prop('dolibarr','rpmVersion') || '11.0.3';
 $old_version =~ s/\.//g;
 
-my $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+my $version = `/usr/bin/rpm -qi nethserver-dolibarr | awk -F': ' '/Version/ {print \$2}'`;
 $version =~ s/\.//g;
 chomp $version;
 
@@ -44,7 +44,7 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
 
     system('touch /usr/share/dolibarr/documents/install.lock');
 
-    $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+    $version = `/usr/bin/rpm -qi nethserver-dolibarr | awk -F': ' '/Version/ {print \$2}'`;
     chomp $version;
 
     $db->set_prop('dolibarr','rpmVersion',$version);
@@ -62,7 +62,7 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
 
     # find version REAL VERSION
     $old_version = $db->get_prop('dolibarr','rpmVersion');
-    $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+    $version = `/usr/bin/rpm -qi nethserver-dolibarr | awk -F': ' '/Version/ {print \$2}'`;
     chomp $version;
     # now dolibarr seems to make mysql database fixes between major version eg 12->13
     # think to check https://192.168.12.183/dolibarr/install/index.php
@@ -77,7 +77,7 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     $db->set_prop('dolibarr','rpmVersion',$version);
 
 } else {
-    $version = `/usr/bin/rpm -qi dolibarr | awk -F': ' '/Version/ {print \$2}'`;
+    $version = `/usr/bin/rpm -qi nethserver-dolibarr | awk -F': ' '/Version/ {print \$2}'`;
     chomp $version;
     $db->set_prop('dolibarr','rpmVersion',$version);
 }
