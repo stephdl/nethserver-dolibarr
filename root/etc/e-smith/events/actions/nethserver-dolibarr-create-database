@@ -33,7 +33,9 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     close(FH);
 
     unlink ('/usr/share/dolibarr/documents/install.lock');
-
+    # Be sure apache is able to write hence the installer fails
+    system ('chown apache:apache /usr/share/dolibarr/htdocs/conf/conf.php');
+    system ('chmod 640 /usr/share/dolibarr/htdocs/conf/conf.php');
     # Install with CURL
     print "#\n# Initial importation of the dolibarr mysql database\n#";
     system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /dev/null 2>&1'); 
