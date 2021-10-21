@@ -4,7 +4,7 @@ Name: %{name}
 %define version 14.0.2
 # we must stick to dolibarr version
 # please increment version
-%define release 2
+%define release 3
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0750,apache,apache) %{_datadir}/dolibarr/htdocs/custom
 
 %changelog
+* Thu Oct 21 2021  stephane de Labrusse <stephdl@de-labrusse.fr>
+- Add good permissions to apache for /usr/share/dolibarr/htdocs/conf/conf.php
+
 * Thu Sep 30 2021  stephane de Labrusse <stephdl@de-labrusse.fr>
 - One rpm to tule dolibarr
 
