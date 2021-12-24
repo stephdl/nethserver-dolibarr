@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 14.0.2
+%define version 14.0.4
 # we must stick to dolibarr version
 # please increment version
 %define release 3
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0750,apache,apache) %{_datadir}/dolibarr/htdocs/custom
 
 %changelog
+* Fri Dec 24 2021 stephane de Labrusse <stephdl@de-labrusse.fr>
+- Bump to 14.0.4
+
 * Thu Oct 21 2021  stephane de Labrusse <stephdl@de-labrusse.fr>
 - Add good permissions to apache for /usr/share/dolibarr/htdocs/conf/conf.php
 
