@@ -16,6 +16,8 @@ my $version = `/usr/bin/rpm -qi nethserver-dolibarr | awk -F': ' '/Version/ {pri
 $version =~ s/\.//g;
 chomp $version;
 
+system('/usr/bin/mkdir -p /usr/share/dolibarr/rpm_logs');
+
 ##test if the mysql db is created, if not then the user and the mysql db are created
 if ( ! -d '/var/lib/mysql/dolibarr') {
     my $password = NethServer::Password::store('dolibarr') || die('Could not generate dolibarr password!');
@@ -38,11 +40,11 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     system ('chmod 640 /usr/share/dolibarr/htdocs/conf/conf.php');
     # Install with CURL
     print "#\n# Initial importation of the dolibarr mysql database\n#";
-    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /dev/null 2>&1'); 
-    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step1.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
-    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step2.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
-    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step4.php --data "testpost=ok&action=set&selectlang=en_US" > /dev/null 2>&1');
-    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step5.php --data "testpost=ok&action=set&selectlang=en_US&pass=admin&pass_verif=admin" > /dev/null 2>&1');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/fileconf.php > /usr/share/dolibarr/rpm_logs/install_fileconf'); 
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step1.php --data "testpost=ok&action=set" > /usr/share/dolibarr/rpm_logs/install_step1');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step2.php --data "testpost=ok&action=set" > /usr/share/dolibarr/rpm_logs/install_step2');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step4.php --data "testpost=ok&action=set" > /usr/share/dolibarr/rpm_logs/install_step4');
+    system('curl -kL -H "Host: 127.0.0.1" -X POST https://127.0.0.1/dolibarr/install/step5.php --data "testpost=ok&action=set&pass=admin&pass_verif=admin" > /usr/share/dolibarr/rpm_logs/install_step5');
 
     system('touch /usr/share/dolibarr/documents/install.lock');
 
