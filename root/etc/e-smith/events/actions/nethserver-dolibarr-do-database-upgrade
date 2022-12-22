@@ -8,6 +8,41 @@ version=$2
 
 /usr/bin/mkdir -p /usr/share/dolibarr/rpm_logs
 
+# test if we use a domain name and use it in URL
+DomainName=$(/usr/sbin/e-smith/config getprop dolibarr DomainName)
+
+if [[ $DomainName != '' ]];then
+    URL="https://${DomainName}/htdocs/install/"
+else
+    URL="https://127.0.0.1/dolibarr/install/"
+fi
+
+# test with time out of 30 seconds
+wait-for-url() {
+    echo "Testing $1"
+    timeout --foreground -s TERM 30s bash -c \
+        'while [[ "$(curl -k -s -o /dev/null -m 3 -L -w ''%{http_code}'' ${0})" != "200" ]];\
+        do echo "Waiting for ${0}" && sleep 2;\
+        done' ${1}
+}
+
+# we try 5 times and exit, else each time we try to reload apache
+for i in {1..5}
+do
+    echo "Test webserver attempt:$i"
+    wait-for-url $URL
+    if [[ $i -eq 5 ]]; then
+        echo "Web server is unreachable, we stop and exit on error"
+        exit 1
+    elif [[ "$(curl -k -s -o /dev/null -m 3 -L -w ''%{http_code}'' $URL)" != "200" ]];then
+        echo "we try to reload apache, the web server is not available"
+        systemctl reload httpd
+    else
+        echo "${URL} - OK! we can continue the database upgrade"
+        break
+    fi
+done
+
 # we have some paths misconfiguration  (include ../folder)
 cd /usr/share/dolibarr/htdocs/install/
 if [[ $version -gt $old_version ]]; then
@@ -20,18 +55,24 @@ if [[ $version -gt $old_version ]]; then
         new=$((old + 1))
         echo "do (major) upgrade $old.0.0 to $new.0.0"
         old=$((old + 1))
-        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade.php  "$old.0.0" "$new.0.0" > /usr/share/dolibarr/rpm_logs/dolibarr_upgrade.php
-        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade2.php "$old.0.0" "$new.0.0" > /usr/share/dolibarr/rpm_logs/dolibarr_upgrade2.php
-        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/step5.php    "$old.0.0" "$new.0.0" > /usr/share/dolibarr/rpm_logs/dolibarr_upgrade_step5.php
+        /usr/bin/date >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade.php
+        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade.php  "$old.0.0" "$new.0.0" >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade.php
+        /usr/bin/date >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade2.php
+        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade2.php "$old.0.0" "$new.0.0" >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade2.php
+        /usr/bin/date >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade_step5.php
+        /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/step5.php    "$old.0.0" "$new.0.0" >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade_step5.php
     done
 else
     # we have to upgrade a minor version (14.0.2 to 14.0.3)
     /usr/bin/rm -f /usr/share/dolibarr/documents/install.lock
     old_version=$((old_version - 1))
     echo "do (minor) upgrade $old_version.0.0 to $version.0.0"
-    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade.php  "$old_version.0.0" "$version.0.0" > /usr/share/dolibarr/rpm_logs/dolibarr_upgrade.php
-    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade2.php "$old_version.0.0" "$version.0.0" > /usr/share/dolibarr/rpm_logs/dolibarr_upgrade2.php
-    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/step5.php    "$old_version.0.0" "$version.0.0" > /usr/share/dolibarr/rpm_logs/dolibarr_step5.php
+    /usr/bin/date >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade.php
+    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade.php  "$old_version.0.0" "$version.0.0" >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade.php
+    /usr/bin/date >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade2.php
+    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/upgrade2.php "$old_version.0.0" "$version.0.0" >> /usr/share/dolibarr/rpm_logs/dolibarr_upgrade2.php
+    /usr/bin/date >> /usr/share/dolibarr/rpm_logs/dolibarr_step5.php
+    /opt/rh/rh-php73/root/bin/php /usr/share/dolibarr/htdocs/install/step5.php    "$old_version.0.0" "$version.0.0" >> /usr/share/dolibarr/rpm_logs/dolibarr_step5.php
 fi
 # ensure install is locked
 /usr/bin/touch /usr/share/dolibarr/documents/install.lock
