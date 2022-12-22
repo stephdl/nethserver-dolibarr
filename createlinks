@@ -6,6 +6,7 @@ my $event = 'nethserver-dolibarr-update';
 
 event_actions($event, qw(
              initialize-default-databases 00
+             nethserver-dolibarr-set-self-domain-name 10
              nethserver-dolibarr-create-ldap-into-mysql 92
              nethserver-dolibarr-create-database 91
 ));
