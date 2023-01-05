@@ -76,7 +76,7 @@ if ( ! -d '/var/lib/mysql/dolibarr') {
     my $indexold_version = $1;
 
     print "upgrade from $old_version to  $version\n";
-    system("/etc/e-smith/events/actions/nethserver-dolibarr-do-database-upgrade $indexold_version $indexversion");
+    system("/etc/e-smith/events/actions/nethserver-dolibarr-do-database-upgrade $indexold_version $indexversion") == 0 or die ("Database of dolibarr upgrade have failed: $?");
 
     $db->set_prop('dolibarr','rpmVersion',$version);
 
