@@ -35,8 +35,8 @@ do
         echo "Web server is unreachable, we stop and exit on error"
         exit 1
     elif [[ "$(curl -k -s -o /dev/null -m 3 -L -w ''%{http_code}'' $URL)" != "200" ]];then
-        echo "we try to reload apache, the web server is not available"
-        systemctl reload httpd
+        echo "we try to restart apache, the web server is not available"
+        systemctl restart httpd && sleep 5
     else
         echo "${URL} - OK! we can continue the database upgrade"
         break
