@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# Set domain name in /etc/hosts (self)
+#
+
+DomainName=$(/usr/sbin/e-smith/config getprop dolibarr DomainName)
+
+if [[ $DomainName != '' ]];then
+    /usr/sbin/e-smith/db hosts set $DomainName self Description 'Set by nethserver-dolibarr (stephdl)'
+    expand-template /etc/hosts
+fi
