@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 16.0.3
+%define version 17.0.1
 # we must stick to dolibarr version
 # please increment version
 %define release 1
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0750,apache,apache) %{_datadir}/dolibarr/htdocs/custom
 
 %changelog
+* Tue april 4 2023 stephane de Labrusse <stephdl@de-labrusse.fr>
+- Bump to 17.0.1
+
 * Wed Dec 21 2022 stephane de Labrusse <stephdl@de-labrusse.fr>
 - Add date in log install and do not overwrite logs
 - test if the webserver is available before to launch database upgrade
