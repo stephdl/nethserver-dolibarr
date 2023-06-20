@@ -1,7 +1,7 @@
 Summary: nethserver-dolibarr  is a CRM
 %define name nethserver-dolibarr
 Name: %{name}
-%define version 17.0.1
+%define version 17.0.2
 # we must stick to dolibarr version
 # please increment version
 %define release 1
@@ -81,6 +81,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(0750,apache,apache) %{_datadir}/dolibarr/htdocs/custom
 
 %changelog
+* Tue Jun 20 2023 stephane de Labrusse <stephdl@de-labrusse.fr>
+- Bump to 17.0.2
 * Tue Apr 4 2023 stephane de Labrusse <stephdl@de-labrusse.fr>
 - Bump to 17.0.1
 
